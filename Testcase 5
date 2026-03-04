@@ -1,0 +1,40 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import norm
+from scipy.stats import pearsonr
+
+# Set seed for reproducibility
+np.random.seed(1)
+
+# 1. Generate study hours (Normal Distribution)
+study_hours = norm.rvs(loc=5, scale=1.5, size=100)
+
+# 2. Generate exam scores with noise
+noise = np.random.randn(100) * 5
+scores = 10 * study_hours + noise
+
+# 3. Correlation using numpy
+corr_matrix = np.corrcoef(study_hours, scores)
+print("Correlation matrix:\n", corr_matrix)
+
+# 4. Pearson correlation
+pearson_corr, _ = pearsonr(study_hours, scores)
+print("Pearson correlation:", pearson_corr)
+
+# 5. Plotting
+plt.rcParams.update({'figure.figsize': (10, 8), 'figure.dpi': 100})
+sns.set_style("whitegrid")
+
+scatter = plt.scatter(study_hours, scores, c=scores, cmap='Spectral')
+plt.colorbar(scatter)
+
+# Best fit line
+m, b = np.polyfit(study_hours, scores, 1)
+plt.plot(study_hours, m*study_hours + b, color='black')
+
+plt.title("Study Hours vs Exam Scores")
+plt.xlabel("Study Hours")
+plt.ylabel("Exam Scores")
+
+plt.show()
